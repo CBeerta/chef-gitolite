@@ -2,7 +2,7 @@
 # Cookbook Name:: gitolite
 # Recipe:: default
 #
-# Copyright 2010, RailsAnt, Inc.
+# Copyright 2013, Claus Beerta
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,41 +16,73 @@
 # See the License for the specific language governing permissions and
 # 
 ::Chef::Recipe.send(:include, Opscode::OpenSSL::Password)
-include_recipe "git::default"
+
+include_recipe "git"
 
 node.set_unless['gitolite']['password'] = secure_password
+
 user "git" do
-  comment "Git User"
-  home "/home/git"
+  comment "Gitolite User"
   shell "/bin/bash"
+  home node[:gitolite][:home_dir]
   password node[:gitolite][:password]
 end
 
-directory "/home/git" do
+directory node[:gitolite][:home_dir] do
   owner "git"
   group "git"
-  mode "0755"
+  mode 00755
 end
 
-git "/home/git/gitolite" do
+git "#{node[:gitolite][:home_dir]}/gitolite" do
   repository node[:gitolite][:repository_url]
   reference "master"
   action :sync
   user "git"
 end
-execute "ssh-keygen -q -f /home/git/.ssh/id_rsa -N \"\" " do
+
+#
+# Load Pub file from node environment
+#
+file "#{node[:gitolite][:home_dir]}/#{node[:gitolite][:ssh_admin_name]}.pub" do
+  content node[:gitolite][:ssh_admin_pubkey]
+  owner "git"
+  group "git"
+  only_if { not node[:gitolite][:ssh_admin_pubkey].nil? }
+end
+
+#
+# Otherwise Create a new admin KeyPair
+#
+execute "ssh-keygen -q -t dsa -f #{node[:gitolite][:home_dir]}/#{node[:gitolite][:ssh_admin_name]} -N \"\" " do
   user "git"
   action :run
-  not_if {File.exist? '/home/git/.ssh/id_rsa.pub'}
+  not_if { File.exist? "#{node[:gitolite][:home_dir]}/#{node[:gitolite][:ssh_admin_name]}.pub" }
+  only_if { node[:gitolite][:ssh_admin_pubkey].nil? }
 end
-execute "cp /home/git/.ssh/id_rsa.pub /home/git/.ssh/authorized_keys" do
-  user "git"
-  not_if {File.exist? '/home/git/.ssh/authorized_keys'}
+
+directory "#{node[:gitolite][:home_dir]}/bin" do
+  owner "git"
+  group "git"
+  mode 00755
+  action :create
 end
-execute "./gl-easy-install -q git #{node[:gitolite][:host]} #{node[:gitolite][:admin_name]}" do
+
+execute "gitolite-install" do
+  command "gitolite/install -to #{node[:gitolite][:home_dir]}/bin"
   user "git"
   group "git"
-  environment ({'HOME' => '/home/git'})
-  cwd "/home/git/gitolite/src"
-  not_if {File.exists?("/home/git/repositories") }
+  environment ({'HOME' => node[:gitolite][:home_dir]})
+  cwd node[:gitolite][:home_dir]
+  not_if {File.exists?("#{node[:gitolite][:home_dir]}/repositories") }
+  notifies :run, "execute[gitolite-setup-admin]"
+end
+
+execute "gitolite-setup-admin" do
+  command "bin/gitolite setup -pk #{node[:gitolite][:ssh_admin_name]}.pub"
+  user "git"
+  group "git"
+  environment ({'HOME' => node[:gitolite][:home_dir]})
+  cwd node[:gitolite][:home_dir]
+  action :nothing
 end

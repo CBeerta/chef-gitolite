@@ -1,30 +1,100 @@
 {
-  "maintainer_email": "ruanwz@gmail.com",
-  "groupings": {
+  "name": "gitolite",
+  "description": "Installs gitolite",
+  "long_description": "Description\n===========\n\nInstalls gitolite from git.\n\nIf no SSH Public Key is specified, a new Keypair is generated, that can be found in gitolite's Home Directory.\n\nAttributes\n==========\n\n* `node[:gitolite][:ssh_admin_pubkey]` - SSH Public Key for Admin Account\n* `node[:gitolite][:ssh_admin_name]` - Name of the Admin User\n* `node[:gitolite][:home_dir]` - Home directory for gitolite and the Repositories\n* `node[:gitolite][:repository_url]` - Url to Clone gitolite from\n\nLicense and Authors\n===================\n\nAuthor:: Claus Beerta <claus@beerta.de>\nAuthor:: David Ruan <ruanwz@gmail.com>\n\nCopyright:: 2013, Claus Beerta <claus@beerta.de>\nCopyright:: 2011, David Ruan <ruanwz@gmail.com>\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n",
+  "maintainer": "Claus Beerta",
+  "maintainer_email": "claus@beerta.de",
+  "license": "Apache 2.0",
+  "platforms": {
   },
-  "attributes": {
+  "dependencies": {
+    "git": ">= 0.0.0"
   },
   "recommendations": {
   },
-  "description": "Installs gitolite",
   "suggestions": {
   },
-  "dependencies": {
-  },
-  "platforms": {
-    "ubuntu": ">= 0.0.0"
-  },
-  "version": "1.0.1",
   "conflicting": {
   },
-  "long_description": "DESCRIPTION\n===========\n\nInstalls gitolite, a Point to Point Tunneling Server.\n\nREQUIREMENTS\n============\n\nPlatform with a package named 'gitolite'.\n\nLICENSE AND AUTHOR\n==================\n\nAuthor:: David Ruan (<ruanwz@gmail.com>)\n\nCopyright:: David Ruan (<ruanwz@gmail.com>)\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.\n",
   "providing": {
   },
-  "name": "gitolite",
-  "recipes": {
-  },
-  "maintainer": "David Ruan",
   "replacing": {
   },
-  "license": "Apache 2.0"
+  "attributes": {
+    "gitolite": {
+      "display_name": "Gitolite Hash",
+      "description": "Hash of Gitolite attributes",
+      "type": "hash",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "required": "optional",
+      "recipes": [
+
+      ]
+    },
+    "gitolite/ssh_admin_pubkey": {
+      "display_name": "Gitolite Admin SSH Public Key",
+      "description": "SSH Public Key for Admin User. Leave nil to create a new KeyPair",
+      "default": null,
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "required": "optional",
+      "recipes": [
+
+      ]
+    },
+    "gitolite/ssh_admin_name": {
+      "display_name": "Name of the Admin User",
+      "description": "Name of the Admin User to use for the Public Key. No Spaces.",
+      "default": "GitoliteAdmin",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "required": "optional",
+      "recipes": [
+
+      ]
+    },
+    "gitolite/home_dir": {
+      "display_name": "Home Directory for gitolite",
+      "description": "Where to Create the Home Directory, and store all Repositories",
+      "default": "/var/gitolite",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "required": "optional",
+      "recipes": [
+
+      ]
+    },
+    "gitolite/repository_url": {
+      "display_name": "Repo Url to Gitolite",
+      "description": "URL to the GIT Repository for Gitolite",
+      "default": "git://github.com/sitaramc/gitolite.git",
+      "choice": [
+
+      ],
+      "calculated": false,
+      "type": "string",
+      "required": "optional",
+      "recipes": [
+
+      ]
+    }
+  },
+  "groupings": {
+  },
+  "recipes": {
+    "gitolite": "Install Gitolite"
+  },
+  "version": "1.1.0"
 }

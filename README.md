@@ -1,19 +1,26 @@
-DESCRIPTION
+Description
 ===========
 
-Installs gitolite, a Point to Point Tunneling Server.
+Installs gitolite from git.
 
-REQUIREMENTS
-============
+If no SSH Public Key is specified, a new Keypair is generated, that can be found in gitolite's Home Directory.
 
-Platform with a package named 'gitolite'.
+Attributes
+==========
 
-LICENSE AND AUTHOR
-==================
+* `node[:gitolite][:ssh_admin_pubkey]` - SSH Public Key for Admin Account
+* `node[:gitolite][:ssh_admin_name]` - Name of the Admin User
+* `node[:gitolite][:home_dir]` - Home directory for gitolite and the Repositories
+* `node[:gitolite][:repository_url]` - Url to Clone gitolite from
 
-Author:: David Ruan (<ruanwz@gmail.com>)
+License and Authors
+===================
 
-Copyright:: David Ruan (<ruanwz@gmail.com>)
+Author:: Claus Beerta <claus@beerta.de>
+Author:: David Ruan <ruanwz@gmail.com>
+
+Copyright:: 2013, Claus Beerta <claus@beerta.de>
+Copyright:: 2011, David Ruan <ruanwz@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
